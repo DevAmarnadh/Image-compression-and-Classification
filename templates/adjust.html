@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adjust Image</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Adjust Image</h1>
+
+    <!-- Adjusted width and height fields -->
+    <label for="adjusted_width">Adjusted Width:</label>
+    <input type="number" id="adjusted_width" name="adjusted_width" required>
+
+    <label for="adjusted_height">Adjusted Height:</label>
+    <input type="number" id="adjusted_height" name="adjusted_height" required>
+
+    <!-- Hidden input field for filename -->
+    <input type="hidden" id="filename" name="filename" value="{{ adjusted_image_filename }}">
+
+    <!-- Adjust button -->
+    <button onclick="adjustImage()">Adjust Image</button>
+
+    <script>
+        function adjustImage() {
+            // Get adjusted width and height
+            var adjustedWidth = document.getElementById('adjusted_width').value;
+            var adjustedHeight = document.getElementById('adjusted_height').value;
+
+            // Update the filename (if needed)
+            // var newFilename = generateNewFilename(); // Replace this with your logic
+            // document.getElementById('filename').value = newFilename;
+
+            // Submit the form
+            document.getElementById('adjustForm').submit();
+        }
+    </script>
+
+</body>
+</html>

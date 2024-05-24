@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCA Compression</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #3498db, #8e44ad); /* Gradient background */
+            animation: colorChange 10s linear infinite alternate; /* Background color animation */
+            overflow: hidden;
+        }
+
+        @keyframes colorChange {
+            0% {
+                background-color: #3498db;
+            }
+            50% {
+                background-color: #8e44ad;
+            }
+            100% {
+                background-color: #3498db;
+            }
+        }
+
+        .container {
+            display: none;
+            flex-direction: row;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .sidenav {
+            width: 200px;
+            background-color: black; /* Changed nav bar color to black */
+            color: white; /* Changed text color to white */
+            height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .sidenav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidenav ul li {
+            margin-bottom: 20px;
+        }
+
+        .sidenav ul li a {
+            color: white; /* Changed link color to white */
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidenav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Transparent hover color */
+        }
+
+        .content {
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+            padding: 40px;
+        }
+
+        .form-container, .image-container {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            color: black; /* Changed title color to black */
+            margin-bottom: 40px;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* About section style */
+        #aboutSection {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            margin: 40px auto 0;
+            text-align: center;
+            display: none; /* Initially hidden */
+        }
+
+        #aboutSection h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #aboutSection p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Landing page styles */
+        #heroSection {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            height: 100vh;
+        }
+
+        #heroSection h1 {
+            font-size: 48px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        #heroSection p {
+            font-size: 24px;
+            color: #ddd;
+            margin-bottom: 40px;
+        }
+
+        #heroSection a {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 15px 30px;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        #heroSection a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing page section -->
+    <div id="heroSection">
+        <h1>Welcome to PCA Image Compression</h1>
+        <p>Efficiently compress your images using Principal Component Analysis</p>
+        <a href="#" id="getStartedLink">Get Started</a>
+    </div>
+
+    <div class="container">
+        <!-- Side navigation bar -->
+        <nav class="sidenav">
+            <ul>
+                <li><a href="#" id="homeLink">Home</a></li>
+                <li><a href="#" id="aboutLink">About Team</a></li>
+                <li><a href="#" id="researchPapersLink">Research Papers</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main content -->
+        <div class="content">
+            <!-- Image container -->
+            <div class="image-container">
+                <img src="#" alt="Uploaded Image" id="uploadedImage">
+            </div>
+
+            <!-- Form container -->
+            <div class="form-container">
+                <h1>PCA Compression</h1>
+                <form action="/compress" method="post" enctype="multipart/form-data">
+                    <label for="file">Upload Image:</label>
+                    <input type="file" name="file" accept="image/*" required onchange="updateImageDetails(this)">
+
+                    <label for="quality">Image Quality:</label>
+                    <input type="range" name="quality" min="1" max="100" value="85" onchange="updateQuality(this.value)">
+                    <span id="qualityValue">85</span>
+
+                    <label for="original_height">Original Height:</label>
+                    <input type="number" name="original_height" id="original_height" readonly>
+
+                    <label for="original_width">Original Width:</label>
+                    <input type="number" name="original_width" id="original_width" readonly>
+
+                    <input type="submit" value="Compress">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- About PCA section -->
+    <div id="aboutPCASection" style="display: none;">
+        <h2>About PCA (Principal Component Analysis)</h2>
+        <p>Principal Component Analysis (PCA) is a statistical technique used for reducing the dimensionality of data while retaining most of its information. It works by transforming the original variables into a new set of variables, called principal components, which are linear combinations of the original variables. These principal components are ordered by the amount of variance they explain in the data, with the first component explaining the most variance and subsequent components explaining less and less variance.</p>
+        <p>PCA is commonly used in various fields such as image processing, pattern recognition, and data compression. In image processing, PCA can be used for tasks like image compression, where it helps reduce the storage space required for representing images while preserving their essential features.</p>
+    </div>
+
+    <!-- About team section -->
+    <div id="aboutTeamSection" style="display: none;">
+        <h2>About My Team</h2>
+        <p>G.DEV AMARNADH - Team Lead</p>
+        <p>B.DEVI - Designer</p>
+        <p>V.GOPI - Developer</p>
+        <p>VENU - Researcher</p>
+    </div>
+
+    <!-- Research Papers section -->
+    <div id="researchPapersSection" style="display: none;">
+        <h2>Research Papers on PCA Image Compression</h2>
+        <ul>
+            <li><a href="https://www.researchgate.net/publication/329025432_Image_Compression_Using_Principle_Component_Analysis">Paper 1</a></li>
+            <li><a href="https://www.researchgate.net/publication/319248454_Principal_component_analysis_to_reduce_dimension_on_digital_imagef">Paper 2</a></li>
+            <li><a href="https://www.researchgate.net/publication/328798241_Application_of_Principal_Component_Analysis_to_Image_Compression">Paper 3</a></li>
+            <!-- Add more papers as needed -->
+        </ul>
+    </div>
+
+    <script>
+        // Function to update image details like width and height
+        function updateImageDetails(input) {
+            if (input.files && input.files[0]) {
+                var img = new Image();
+                img.onload = function() {
+                    document.getElementById('original_height').value = this.height;
+                    document.getElementById('original_width').value = this.width;
+                    document.getElementById('uploadedImage').src = URL.createObjectURL(input.files[0]); // Display the uploaded image
+                };
+                img.src = URL.createObjectURL(input.files[0]);
+            }
+        }
+
+        // Function to update image quality value display
+        function updateQuality(value) {
+            document.getElementById('qualityValue').textContent = value;
+        }
+
+        // Function to display about PCA section
+        function displayAboutPCASection() {
+            document.getElementById('aboutPCASection').style.display = 'block';
+            document.getElementById('aboutTeamSection').style.display = 'none'; // Hide team section
+            document.getElementById('researchPapersSection').style.display = 'none'; // Hide research papers section
+        }
+
+        // Function to display about team section
+        function displayAboutTeamSection() {
+            document.getElementById('aboutTeamSection').style.display = 'block';
+            document.getElementById('aboutPCASection').style.display = 'none'; // Hide PCA section
+            document.getElementById('researchPapersSection').style.display = 'none'; // Hide research papers section
+        }
+
+        // Function to display research papers section
+        function displayResearchPapersSection() {
+            document.getElementById('researchPapersSection').style.display = 'block';
+            document.getElementById('aboutPCASection').style.display = 'none'; // Hide PCA section
+            document.getElementById('aboutTeamSection').style.display = 'none'; // Hide team section
+        }
+
+        // Add event listeners to the links
+        document.getElementById('homeLink').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default behavior of the link
+            displayAboutPCASection(); // Call the function to display about PCA section
+        });
+
+        document.getElementById('aboutLink').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default behavior of the link
+            displayAboutTeamSection(); // Call the function to display about team section
+        });
+
+        document.getElementById('researchPapersLink').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default behavior of the link
+            displayResearchPapersSection(); // Call the function to display research papers section
+        });
+
+        // Function to show main content and hide landing page
+        function showMainContent() {
+            document.getElementById('heroSection').style.display = 'none'; // Hide landing page
+            document.querySelector('.container').style.display = 'flex'; // Show main content
+        }
+
+        // Add event listener to the "Get Started" button
+        document.getElementById('getStartedLink').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default behavior of the link
+            showMainContent(); // Call the function to show main content
+            displayAboutPCASection(); // Display "About Team" section by default
+        });
+    </script>
+</body>
+</html>

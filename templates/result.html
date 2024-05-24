@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+
+    <style>
+        /* Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #ff7e5f, #feb47b); /* Background gradient */
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1, h2 {
+                font-size: 1.5em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Result</h1>
+
+        <h2>Original Image</h2>
+        <p>Height: {{ original_info.Height }} pixels</p>
+        <p>Width: {{ original_info.Width }} pixels</p>
+        <p>Resolution: {{ original_info.Resolution }} pixels</p>
+        <p>Size: {{ original_size_kb }} KB</p>
+
+        <h2>Compressed Image</h2>
+        <p>Height: {{ compressed_info.Height }} pixels</p>
+        <p>Width: {{ compressed_info.Width }} pixels</p>
+        <p>Resolution: {{ compressed_info.Resolution }} pixels</p>
+        <p>Size: {{ compressed_size_kb }} KB</p>
+
+        <!-- Display the compressed image -->
+        <h2>Compressed Image</h2>
+        <img src="{{ url_for('download', filename=compressed_image_filename) }}" alt="Compressed Image">
+
+        <h2>Compressed Image Prediction</h2>
+        <ul>
+            {% for classification in classifications %}
+            <li>{{ classification[0] }}: {{ "%.2f" % (classification[1] * 100) }}%</li>
+            {% endfor %}
+        </ul>
+        <h2>Download Links</h2>
+        <p><a href="{{ url_for('download', filename=compressed_image_filename) }}">Download Compressed Image</a></p>
+        <p><a href="{{ url_for('download', filename=compressed_pdf_filename) }}">Download Compressed PDF</a></p>
+
+        <h2>Convert to PDF</h2>
+        <form action="{{ url_for('convert_to_pdf') }}" method="post">
+            <input type="hidden" name="adjusted_image_filename" value="{{ compressed_image_filename }}">
+            <button type="submit">Convert Compressed Image to PDF</button>
+        </form>
+        <h2>Data Loss Percentage</h2>
+        <p>Data Loss: {{ ((original_size_kb - compressed_size_kb) / original_size_kb) * 100 | round(2) }}%</p>
+    </div>
+</body>
+</html>
